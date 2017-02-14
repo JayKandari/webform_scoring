@@ -1,6 +1,23 @@
 <?php
 
 /**
+ * Implements hook_help().
+ */
+function webform_scoring_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case 'admin/help#webform_scoring':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Adds a hidden field to a webform to save overall score for a submission when Webform Scoring is enabled.') . '</p>';
+      $output .= '<p>' . t('This module is particularly useful if you want to rate/score the submissions of users. For eg: you are using webforms to create a survey, and you want to get the list of potential users/clients/people you wish to interact with.') . '</p>';
+      $output .= '<p>' . t('This module allows defining scores for a different type of inputs by the user. For eg: User is asked a question like "Which city they live in?" and based on user\'s answer we score them and so on.') . '</p>';
+      $output .= '<p>' . t('Configure Scores per field for a webform by <br/> Goto Webform\'s view page > Webform Tab > Scoring Rules.') . '</p>';
+      return $output;
+  }
+}
+
+/**
  * Implement hook_menu
  * @return array
  */
