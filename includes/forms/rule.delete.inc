@@ -32,7 +32,7 @@ function webform_scoring_delete_rule($form, &$form_state, $node, $rid) {
     $component = $node->webform['components'][$rule->cid];
   }
   
-  if ($rule && $component) {
+  if ($rule) {
     $form['info'] = array(
       '#markup' => t('Remove the rule at component %component?', array('%component' => $component['name'])),
       '#weight' => -100,
