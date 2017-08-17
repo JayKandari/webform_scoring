@@ -1,12 +1,20 @@
 <?php
 
-function webform_scoring_schema(){
-	$schema['webform_scoring_values_scores_pair'] = array(
+/**
+ * @file
+ */
+
+/**
+ *
+ */
+function webform_scoring_schema() {
+  $schema['webform_scoring_values_scores_pair'] = array(
     'description' => 'Values-Scores pair for each components of a webform.',
     'fields' => array(
       'id' => array(
         'description' => 'The Values-Scores Pair ID',
-        'type' => 'serial', // serial makes it INT AUTO_INCREMENT. :) #HappyTimes
+  // Serial makes it INT AUTO_INCREMENT. :) #HappyTimes.
+        'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
@@ -30,13 +38,13 @@ function webform_scoring_schema(){
     'primary key' => array('id'),
   );
 
-
   $schema['webform_scoring_enabled_webforms'] = array(
     'description' => 'List of webforms on which Scoring is enabled.',
     'fields' => array(
       'id' => array(
         'description' => 'The Item ID',
-        'type' => 'serial', // serial makes it INT AUTO_INCREMENT. :) #HappyTimes
+  // Serial makes it INT AUTO_INCREMENT. :) #HappyTimes.
+        'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
@@ -53,7 +61,7 @@ function webform_scoring_schema(){
         'default' => 0,
         'unsigned' => TRUE,
         'not null' => TRUE,
-        
+
       ),
       'cid' => array(
         'description' => 'Component ID of hidden scoring field of the webform',

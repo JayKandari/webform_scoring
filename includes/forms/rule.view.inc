@@ -1,11 +1,21 @@
 <?php
 
 /**
- * form callback for the main form
+ * @file
+ */
+
+/**
+ * Form callback for the main form.
+ *
  * @param type $form
  * @param type $form_state
  * @param type $node
+ *
  * @return string
+ */
+
+/**
+ *
  */
 function webform_scoring_manage_rules($form, &$form_state, $node) {
 
@@ -19,11 +29,13 @@ function webform_scoring_manage_rules($form, &$form_state, $node) {
     $has_score = _webform_score_has_cid($node, $score_record->cid);
     if (!$has_score) {
       $score_enabled = FALSE;
-    } else {
+    }
+    else {
       $score_enabled = $score_record->enabled;
       $label_value = $has_score;
     }
-  } else {
+  }
+  else {
     $score_enabled = FALSE;
   }
 
@@ -49,7 +61,7 @@ function webform_scoring_manage_rules($form, &$form_state, $node) {
         '#type' => 'submit',
         '#value' => t('Add'),
         '#submit' => array('webform_scoring_manage_rules_submit_add'),
-      )
+      ),
     );
   }
 
@@ -74,13 +86,13 @@ function webform_scoring_manage_rules($form, &$form_state, $node) {
       '#value' => t('Disable'),
       '#submit' => array('webform_scoring_manage_rules_submit_disable'),
     );
-  } else {
+  }
+  else {
     $form['actions']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Enable'),
     );
   }
-
 
   $components = _webform_score_used_components($node);
   $component_table_body = array();
@@ -105,16 +117,16 @@ function webform_scoring_manage_rules($form, &$form_state, $node) {
     '#theme' => 'table',
     '#header' => $headers,
     '#rows' => $component_table_body,
-    '#attributes' => array('class' => array('mytable'))
+    '#attributes' => array('class' => array('mytable')),
   );
-
 
   return $form;
 }
 
 /**
- * On enable/disable
- * @param type $form
+ * On enable/disable.
+ *
+ * @param mixed $form
  * @param array $form_state
  */
 function webform_scoring_manage_rules_submit($form, &$form_state) {
@@ -122,16 +134,17 @@ function webform_scoring_manage_rules_submit($form, &$form_state) {
   $node = $form_state['node'];
 
   if (!$score_record) {
-    // create if needed
+    // Create if needed.
     $cid = create_a_new_hidden_component($node, $form_state['values']['label']);
     $result = db_insert('webform_scoring_enabled_webforms')
       ->fields(array('enabled' => 1, 'cid' => $cid, 'nid' => $node->nid))
       ->execute();
-  } else {
-    // check if the cid is still in place
+  }
+  else {
+    // Check if the cid is still in place.
     $score_record->cid = create_a_new_hidden_component($node, $form_state['values']['label'], $score_record->cid);
 
-    // update record
+    // Update record.
     $result = db_update('webform_scoring_enabled_webforms')
       ->fields(array(
         'enabled' => 1,
@@ -143,15 +156,16 @@ function webform_scoring_manage_rules_submit($form, &$form_state) {
 }
 
 /**
- * On disable scoring for the selected node
- * @param type $form
- * @param type $form_state
+ * On disable scoring for the selected node.
+ *
+ * @param mixed $form
+ * @param mixed $form_state
  */
 function webform_scoring_manage_rules_submit_disable($form, &$form_state) {
   $score_record = $form_state['score_record'];
   $node = $form_state['node'];
 
-  // update record
+  // Update record.
   $result = db_update('webform_scoring_enabled_webforms')
     ->fields(array(
       'enabled' => 0,
@@ -159,18 +173,19 @@ function webform_scoring_manage_rules_submit_disable($form, &$form_state) {
     ))
     ->condition('id', $score_record->id)
     ->execute();
-  
-  // delete the component
+
+  // Delete the component.
   delete_custom_hidden_component($node->nid, $score_record->cid);
 }
 
 /**
- * On submit a new rule
- * @param type $form
- * @param type $form_state
+ * On submit a new rule.
+ *
+ * @param mixed $form
+ * @param mixed $form_state
  */
 function webform_scoring_manage_rules_submit_add($form, &$form_state) {
-  // attache to this one:
+  // Attache to this one:
   $node = $form_state['node'];
 
   $result = db_insert('webform_scoring_values_scores_pair')
@@ -183,35 +198,37 @@ function webform_scoring_manage_rules_submit_add($form, &$form_state) {
 }
 
 /**
- * Delete a specific component at the node
- * 
- * @param type $nid
- * @param type $cid
+ * Delete a specific component at the node.
+ *
+ * @param mixed $nid
+ * @param mixed $cid
  */
 function delete_custom_hidden_component($nid, $cid = 9999) {
   $node = node_load($nid);
-  #dsm($node);
-
+  // dsm($node);
   unset($node->webform['components'][$cid]);
   node_save($node);
 }
 
 /**
- * Create a hidden custom component to store the result
- * @param type $nid
- * @param type $new_component
- * @param type $cid
- * @param type $pid
- * @return type
+ * Create a hidden custom component to store the result.
+ *
+ * @param mixed $nid
+ * @param mixed $new_component
+ * @param mixed $cid
+ * @param mixed $pid
+ *
+ * @return mixed
  */
 function create_a_new_hidden_component($node, $label, $cid = NULL) {
 
   $old_label = _webform_score_has_cid($node, $cid);
   if ($old_label) {
-    // update
+    // Update.
     $node->webform['components'][$cid]['name'] = $label;
-  } else {
-    // insert
+  }
+  else {
+    // Insert.
     $cid = max(array_keys($node->webform['components'])) + 1;
     $safe_label = drupal_html_class($label);
     $processed_name = str_replace('-', '_', strtolower($safe_label));
@@ -219,7 +236,8 @@ function create_a_new_hidden_component($node, $label, $cid = NULL) {
     // values, but let's be sure.
     $component = array(
       'cid' => $cid,
-      'pid' => 0, #(int)$pid,
+    // (int)$pid,.
+      'pid' => 0,
       'nid' => (int) $node->nid,
       // I don't trust the admin to make a key based on input :)
       'form_key' => $processed_name,

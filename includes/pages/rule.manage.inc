@@ -1,22 +1,35 @@
 <?php
+
 /**
- * Page callback - choose which form to render
+ * @file
+ */
+
+/**
+ * Page callback - choose which form to render.
+ *
  * @todo create the delete rule callback
  * @todo create the edit rule callback
- * 
+ *
  * @param type $node
  * @param type $action
  * @param type $sid
+ *
  * @return type
+ */
+
+/**
+ *
  */
 function webform_scoring_scoring_rules($node, $action = NULL, $rid = NULL) {
   switch ($action) {
     case 'delete':
       module_load_include('inc', 'webform_scoring', 'includes/forms/rule.delete');
       return drupal_get_form('webform_scoring_delete_rule', $node, $rid);
+
     case 'edit':
       module_load_include('inc', 'webform_scoring', 'includes/forms/rule.edit');
       return drupal_get_form('webform_scoring_edit_rule', $node, $rid);
+
     default:
       module_load_include('inc', 'webform_scoring', 'includes/forms/rule.view');
       return drupal_get_form('webform_scoring_manage_rules', $node);
@@ -24,9 +37,11 @@ function webform_scoring_scoring_rules($node, $action = NULL, $rid = NULL) {
 }
 
 /**
- * Get a list of all used components
- * @param type $node
- * @return type
+ * Get a list of all used components.
+ *
+ * @param mixed $node
+ *
+ * @return mixed
  */
 function _webform_score_used_components($node) {
   $components = &drupal_static(__FUNCTION__ . '_' . $node->nid);
@@ -45,9 +60,11 @@ function _webform_score_used_components($node) {
 }
 
 /**
- * Load a single rule
- * @param type $rid
- * @return type
+ * Load a single rule.
+ *
+ * @param mixed $rid
+ *
+ * @return mixed
  */
 function _webform_score_get_rule($node, $rid) {
   $rule = &drupal_static(__FUNCTION__ . '_' . $rid);
@@ -58,15 +75,16 @@ function _webform_score_get_rule($node, $rid) {
     $query->condition('nid', $node->nid);
     $rule = $query->execute()->fetch();
   }
-  
+
   return $rule;
 }
 
 /**
- * Get a list of all possible components to create a rule for
- * 
- * @param type $node
- * @return type
+ * Get a list of all possible components to create a rule for.
+ *
+ * @param mixed $node
+ *
+ * @return mixed
  */
 function _webform_score_allowed_components($node) {
   $components = &drupal_static(__FUNCTION__ . '_' . $node->nid);
@@ -83,6 +101,7 @@ function _webform_score_allowed_components($node) {
         case 'hidden':
         case 'pagebreak':
           continue 2;
+
         default:
           break;
       }
@@ -92,4 +111,3 @@ function _webform_score_allowed_components($node) {
 
   return $components;
 }
-

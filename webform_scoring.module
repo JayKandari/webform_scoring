@@ -1,7 +1,15 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implements hook_help().
+ */
+
+/**
+ *
  */
 function webform_scoring_help($path, $arg) {
   $output = '';
@@ -18,7 +26,8 @@ function webform_scoring_help($path, $arg) {
 }
 
 /**
- * Implement hook_menu
+ * Implement hook_menu.
+ *
  * @return array
  */
 function webform_scoring_menu() {
@@ -50,9 +59,11 @@ function webform_scoring_menu() {
 }
 
 /**
- * Get the settings for the current webform
- * @param type $nid
- * @return type
+ * Get the settings for the current webform.
+ *
+ * @param mixed $nid
+ *
+ * @return mixed
  */
 function _webform_score_enabled($nid) {
   $enabled = &drupal_static(__FUNCTION__ . '_' . $nid);
@@ -69,17 +80,20 @@ function _webform_score_enabled($nid) {
 }
 
 /**
- * Calculate the score for the result of a submission
- * @param type $node
- * @param type $data
- * @return boolean|array
+ * Calculate the score for the result of a submission.
+ *
+ * @param mixed $node
+ * @param mixed $data
+ *
+ * @return bool|array
  */
 function webform_scoring_calculate_score($node, $data) {
   $score_enabled = _webform_score_enabled($node->nid);
   // Scoring is not enabled for this node.
   // Note that this function returns a boolean. Thus return FALSE.
-  if ($score_enabled == NULL)
+  if ($score_enabled == NULL) {
     return FALSE;
+  }
   if ($score_enabled->enabled && _webform_score_has_cid($node, $score_enabled->cid)) {
     $query = db_select('webform_scoring_values_scores_pair', 'a');
     $query->fields('a');
@@ -88,7 +102,7 @@ function webform_scoring_calculate_score($node, $data) {
 
     $score_key = array();
     $cid_list = array();
-    //$component = array();
+    // $component = array();
     foreach ($result as $item) {
       $pairs = array();
       $score_key[$item['cid']]['cid'] = $item['cid'];
@@ -123,9 +137,10 @@ function webform_scoring_calculate_score($node, $data) {
 }
 
 /**
- * Store a quiz result upon submission presave
- * @param type $node
- * @param type $submission
+ * Store a quiz result upon submission presave.
+ *
+ * @param mixed $node
+ * @param mixed $submission
  */
 function webform_scoring_webform_submission_presave($node, &$submission) {
   $total_score = webform_scoring_calculate_score($node, $submission->data);
@@ -133,17 +148,19 @@ function webform_scoring_webform_submission_presave($node, &$submission) {
   if ($total_score !== FALSE) {
     $score_enabled = _webform_score_enabled($node->nid);
     // Scoring is not enabled for this node.
-    if($score_enabled != NULL) {
-       $submission->data[$score_enabled->cid][0] = $total_score;
+    if ($score_enabled != NULL) {
+      $submission->data[$score_enabled->cid][0] = $total_score;
     }
   }
 }
 
 /**
- * Check if the webform contains a certain component
- * @param type $node
- * @param type $cid
- * @return type
+ * Check if the webform contains a certain component.
+ *
+ * @param mixed $node
+ * @param mixed $cid
+ *
+ * @return mixed
  */
 function _webform_score_has_cid($node, $cid) {
   if (empty($node->webform)) {

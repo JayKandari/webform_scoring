@@ -1,13 +1,22 @@
 <?php
 
 /**
- * Form callback to edit a rule
- * 
+ * @file
+ */
+
+/**
+ * Form callback to edit a rule.
+ *
  * @param type $form
  * @param array $form_state
  * @param type $node
  * @param type $rid
+ *
  * @return boolean
+ */
+
+/**
+ *
  */
 function webform_scoring_edit_rule($form, &$form_state, $node, $rid) {
 
@@ -36,7 +45,8 @@ function webform_scoring_edit_rule($form, &$form_state, $node, $rid) {
   if (!$rule || !$component) {
     drupal_set_message(t('Component not found'), 'error', FALSE);
     $form['actions']['submit']['#access'] = FALSE;
-  } else {
+  }
+  else {
     $form['info'] = array(
       '#markup' => t('Score map for %component', array('%component' => $component['name'])),
     );
@@ -54,6 +64,9 @@ function webform_scoring_edit_rule($form, &$form_state, $node, $rid) {
   return $form;
 }
 
+/**
+ *
+ */
 function webform_scoring_edit_rule_save($form, &$form_state) {
   db_update('webform_scoring_values_scores_pair')
     ->fields(array(
