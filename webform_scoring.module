@@ -76,6 +76,10 @@ function _webform_score_enabled($nid) {
  */
 function webform_scoring_calculate_score($node, $data) {
   $score_enabled = _webform_score_enabled($node->nid);
+  // Scoring is not enabled for this node.
+  // Note that this function returns a boolean. Thus return FALSE.
+  if ($score_enabled == NULL)
+    return FALSE;
   if ($score_enabled->enabled && _webform_score_has_cid($node, $score_enabled->cid)) {
     $query = db_select('webform_scoring_values_scores_pair', 'a');
     $query->fields('a');
@@ -128,7 +132,10 @@ function webform_scoring_webform_submission_presave($node, &$submission) {
 
   if ($total_score !== FALSE) {
     $score_enabled = _webform_score_enabled($node->nid);
-    $submission->data[$score_enabled->cid][0] = $total_score;
+    // Scoring is not enabled for this node.
+    if($score_enabled != NULL) {
+       $submission->data[$score_enabled->cid][0] = $total_score;
+    }
   }
 }
 
